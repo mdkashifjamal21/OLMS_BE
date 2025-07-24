@@ -13,11 +13,13 @@ const sequelize = db.sequelize;
 const userRoutes = require('./routes/routesusers');
 const bookRoutes = require('./routes/routesbooks');
 const issuedBookRoutes = require('./routes/routesissuedBook');
+const authRoutes = require('./routes/authRoutes');
 
 // Mount Routes
 app.use('/api/users', userRoutes);          // e.g., GET /api/users
 app.use('/api/books', bookRoutes);          // e.g., GET /api/books
 app.use('/api/issued-books', issuedBookRoutes); // e.g., GET /api/issued-books
+app.use('/api/auth', authRoutes);          // e.g., POST /api/auth/login
 
 // Sync database and start server
 sequelize.sync().then(() => {

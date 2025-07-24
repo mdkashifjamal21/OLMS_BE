@@ -6,7 +6,11 @@ const User = sequelize.define('User', {
     autoIncrement: true,
     primaryKey: true
   },
-  email: DataTypes.STRING,
+  email: {
+  type: DataTypes.STRING,
+  unique: true, // Ensure no duplicate emails
+},
+
   name: DataTypes.STRING,
   password: DataTypes.STRING,
   role: {

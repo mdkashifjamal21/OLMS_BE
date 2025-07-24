@@ -1,20 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const bookController = require('../controllers/bookControllers');
+const { protect } = require('../middleware/authMiddleware');
 
-// Get all books
-router.get('/', bookController.getAllBooks);
+// Public route
+router.get('/', protect, bookController.getAllBooks);
 
-// Add a new book
-router.post('/', bookController.addBook);
-
-// Update a book by ID
-router.put('/:id', bookController.updateBook);
-
-// Delete a book by ID
-router.delete('/:id', bookController.deleteBook);
-
-// Get a book by ID (assuming this method exists in bookController)
-router.get('/:id', bookController.getBookById);
+// Protected routes
+router.post('/', protect, bookController.addBook);
+router.put('/:id', protect, bookController.updateBook);
+router.delete('/:id', protect, bookController.deleteBook);
+router.get('/:id', protect, bookController.getBookById);
 
 module.exports = router;
