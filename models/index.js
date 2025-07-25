@@ -2,12 +2,13 @@
 const dotenv = require('dotenv');
 const { Sequelize, DataTypes } = require('sequelize');
 
-// Load correct environment file based on NODE_ENV
-if (process.env.NODE_ENV === 'production') {
-  dotenv.config({ path: '.env.production' });
-} else {
-  dotenv.config(); // Default: .env for local
-}
+/// Load correct .env file
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env';
+dotenv.config({ path: envFile });
+
+// Logging to confirm which env is used
+console.log(`[DB] Running in ${process.env.NODE_ENV} mode using ${envFile}`);
+
 
 // Initialize Sequelize using environment variables
 const sequelize = new Sequelize(
