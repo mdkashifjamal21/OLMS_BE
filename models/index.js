@@ -1,24 +1,18 @@
 // models/index.js
-const dotenv = require('dotenv');
+require('dotenv').config();
 const { Sequelize, DataTypes } = require('sequelize');
 
-/// Load correct .env file
-const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env';
-dotenv.config({ path: envFile });
+// Logging to confirm environment
+console.log(`[DB] Connecting to ${process.env.DB_HOST}`);
 
-// Logging to confirm which env is used
-console.log(`[DB] Running in ${process.env.NODE_ENV} mode using ${envFile}`);
-
-
-// Initialize Sequelize using environment variables
 const sequelize = new Sequelize(
-  process.env.DB_NAME,     // 'railway'
-  process.env.DB_USER,     // 'root'
-  process.env.DB_PASSWORD, // 'kluyDOPehagHWVTEiqaLxumGJfnGeYHw'
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-    host: process.env.DB_HOST,  // 'mysql.railway.internal'
-    port: process.env.DB_PORT || 3306,  // '3306'
-    dialect: 'mysql'
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
+    dialect: 'mysql',
   }
 );
 
@@ -33,13 +27,12 @@ Book.hasMany(IssuedBook, { foreignKey: 'books_id' });
 IssuedBook.belongsTo(User, { foreignKey: 'users_id' });
 IssuedBook.belongsTo(Book, { foreignKey: 'books_id' });
 
-// Export DB object
 const db = {
   sequelize,
   Sequelize,
   User,
   Book,
-  IssuedBook
+  IssuedBook,
 };
 
 module.exports = db;

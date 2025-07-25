@@ -1,3 +1,4 @@
+// server.js
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -17,19 +18,19 @@ const issuedBookRoutes = require('./routes/routesissuedBook');
 const authRoutes = require('./routes/authRoutes');
 
 // Mount Routes
-app.use('/api/users', userRoutes);          // e.g., GET /api/users
-app.use('/api/books', bookRoutes);          // e.g., GET /api/books
-app.use('/api/issued-books', issuedBookRoutes); // e.g., GET /api/issued-books
-app.use('/api/auth', authRoutes);          // e.g., POST /api/auth/login
+app.use('/api/users', userRoutes);
+app.use('/api/books', bookRoutes);
+app.use('/api/issued-books', issuedBookRoutes);
+app.use('/api/auth', authRoutes);
 
 // Sync database and start server
 const PORT = process.env.PORT || 3000;
 
 sequelize.sync().then(() => {
-  console.log('Database synced!');
-  app.listen(PORT,"0.0.0.0", () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log('✅ Database synced!');
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
   });
 }).catch((err) => {
-  console.error('Database sync failed:', err);
+  console.error('❌ Database sync failed:', err);
 });

@@ -1,5 +1,5 @@
 // db.js
-require('dotenv').config(); // Don't manually load .env.production
+require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(
