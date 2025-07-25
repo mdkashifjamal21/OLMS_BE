@@ -1,6 +1,13 @@
 // models/index.js
-require('dotenv').config();
+const dotenv = require('dotenv');
 const { Sequelize, DataTypes } = require('sequelize');
+
+// Load correct environment file based on NODE_ENV
+if (process.env.NODE_ENV === 'production') {
+  dotenv.config({ path: '.env.production' });
+} else {
+  dotenv.config(); // Default: .env for local
+}
 
 // Initialize Sequelize using environment variables
 const sequelize = new Sequelize(
@@ -9,7 +16,7 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD, // 'kluyDOPehagHWVTEiqaLxumGJfnGeYHw'
   {
     host: process.env.DB_HOST,  // 'mysql.railway.internal'
-    port: process.env.DB_PORT,  // '3306'
+    port: process.env.DB_PORT || 3306,  // '3306'
     dialect: 'mysql'
   }
 );
