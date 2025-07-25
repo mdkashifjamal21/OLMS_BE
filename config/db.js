@@ -1,22 +1,15 @@
-const dotenv = require('dotenv');
+// db.js
+require('dotenv').config(); // Don't manually load .env.production
 const { Sequelize } = require('sequelize');
 
-/// Load correct .env file
-const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env';
-dotenv.config({ path: envFile });
-
-// Logging to confirm which env is used
-console.log(`[DB] Running in ${process.env.NODE_ENV} mode using ${envFile}`);
-
-
 const sequelize = new Sequelize(
-  process.env.DB_NAME,     // 'railway'
-  process.env.DB_USER,     // 'root'
-  process.env.DB_PASSWORD, // 'kluyDOPehagHWVTEiqaLxumGJfnGeYHw'
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-    host: process.env.DB_HOST,  // 'mysql.railway.internal'
+    host: process.env.DB_HOST,
     port: process.env.DB_PORT || 3306,
-    dialect: 'mysql'
+    dialect: 'mysql',
   }
 );
 
