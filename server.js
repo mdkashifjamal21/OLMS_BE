@@ -23,11 +23,11 @@ app.use('/api/issued-books', issuedBookRoutes); // e.g., GET /api/issued-books
 app.use('/api/auth', authRoutes);          // e.g., POST /api/auth/login
 
 // Sync database and start server
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 3000;
 
 sequelize.sync().then(() => {
   console.log('Database synced!');
-  app.listen(PORT, () => {
+  app.listen(PORT,"0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
   });
 }).catch((err) => {
