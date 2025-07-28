@@ -1,23 +1,55 @@
 const db = require('../models');
 const IssuedBook = db.IssuedBook;
 
-exports.getAllIssuedBooks = async (req, res) => {
+exports.addIssuedBook = async (req, res) => {
   try {
-    const issuedBooks = await IssuedBook.findAll();
-    res.json(issuedBooks);
+    const {
+      users_id,
+      books_id,
+      issue_date,
+      due_date,
+      return_date,
+      fine_amount,
+      isReturned
+    } = req.body;
+
+    // Basic validation
+    if (
+      !users_id ||
+      !books_id ||
+      !issue_date ||
+      !due_date ||
+      fine_amount === undefined ||
+      isReturned === undefined
+    ) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Optional: validate foreign keys exist
+    const user = await db.User.findByPk(users_id);
+    const book = await db.Book.findByPk(books_id);
+
+    if (!user || !book) {
+      return res.status(400).json({ error: "Invalid user or book ID" });
+    }
+
+    const newIssued = await IssuedBook.create({
+      users_id,
+      books_id,
+      issue_date,
+      due_date,
+      return_date,
+      fine_amount,
+      isReturned
+    });
+
+    res.status(201).json(newIssued);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch issued books' });
+    console.error("Error issuing book:", err);
+    res.status(500).json({ error: 'Failed to issue book', details: err.message });
   }
 };
 
-exports.addIssuedBook = async (req, res) => {
-  try {
-    const newIssued = await IssuedBook.create(req.body);
-    res.status(201).json(newIssued);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to issue book' });
-  }
-};
 
 exports.updateIssuedBook = async (req, res) => {
   try {
@@ -60,13 +92,53 @@ exports.getAllIssuedBooks = async (req, res) => {
         },
         {
           model: db.User,
-          attributes: ['username']
+          attributes: ['name']
         }
       ]
     });
     res.json(issuedBooks);
   } catch (err) {
-    console.error("Error fetching issued books:", err);
+    console.error("Error fetching issued books:", err); // 👈 Add this
     res.status(500).json({ error: 'Failed to fetch issued books' });
+  }
+};
+
+
+
+
+exports.returnIssuedBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const returnDate = dayjs().format("YYYY-MM-DD");
+
+    const issuedBook = await IssuedBook.findByPk(id);
+    if (!issuedBook) {
+      return res.status(404).json({ error: "Issued book not found" });
+    }
+
+    if (issuedBook.isReturned) {
+      return res.status(400).json({ error: "Book already returned" });
+    }
+
+    const dueDate = dayjs(issuedBook.due_date);
+    const actualReturnDate = dayjs(returnDate);
+    const overdueDays = actualReturnDate.diff(dueDate, "day");
+
+    const fine = overdueDays > 0 ? overdueDays * 10 : 0;
+
+    issuedBook.return_date = returnDate;
+    issuedBook.isReturned = true;
+    issuedBook.fine_amount = fine;
+
+    await issuedBook.save();
+
+    const book = await db.Book.findByPk(issuedBook.books_id);
+    book.Avaible_copies += 1;
+    await book.save();
+
+    res.json({ message: "Book returned successfully", fine, issuedBook });
+  } catch (err) {
+    console.error("Error returning book:", err);
+    res.status(500).json({ error: "Failed to return book" });
   }
 };

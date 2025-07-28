@@ -27,5 +27,13 @@ const User = sequelize.define('User', {
   timestamps: false
 });
 
+
+  User.associate = (models) => {
+    User.hasMany(models.IssuedBook, {
+      foreignKey: 'users_id',
+      sourceKey: 'id_users'
+    });
+  };
+
 return User;
 };

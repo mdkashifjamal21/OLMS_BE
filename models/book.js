@@ -19,7 +19,14 @@ const Book = sequelize.define('Book', {
   timestamps: false
 });
 
-return Book;
+  Book.associate = (models) => {
+    Book.hasMany(models.IssuedBook, {
+      foreignKey: 'books_id',
+      sourceKey: 'id_books'
+    });
+  };
+
+  return Book;
 };
 
 

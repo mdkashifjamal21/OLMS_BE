@@ -35,10 +35,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  IssuedBook.associate = (models) => {
-    IssuedBook.belongsTo(models.User, { foreignKey: 'users_id' });
-    IssuedBook.belongsTo(models.Book, { foreignKey: 'books_id' });
+   IssuedBook.associate = (models) => {
+    IssuedBook.belongsTo(models.User, {
+      foreignKey: 'users_id',
+      targetKey: 'id_users'
+    });
+    IssuedBook.belongsTo(models.Book, {
+      foreignKey: 'books_id',
+      targetKey: 'id_books'
+    });
   };
+
+
 
   return IssuedBook;
 };
