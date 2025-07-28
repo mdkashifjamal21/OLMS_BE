@@ -50,3 +50,23 @@ exports.getIssuedBookById = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch issued book' });
   }
 };
+exports.getAllIssuedBooks = async (req, res) => {
+  try {
+    const issuedBooks = await IssuedBook.findAll({
+      include: [
+        {
+          model: db.Book,
+          attributes: ['Title', 'Author']
+        },
+        {
+          model: db.User,
+          attributes: ['username']
+        }
+      ]
+    });
+    res.json(issuedBooks);
+  } catch (err) {
+    console.error("Error fetching issued books:", err);
+    res.status(500).json({ error: 'Failed to fetch issued books' });
+  }
+};
